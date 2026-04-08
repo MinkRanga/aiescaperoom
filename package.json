@@ -1,9 +1,7 @@
 {
   "name": "ai-escape-room",
   "version": "1.0.0",
-  "engines": {
-    "node": "20.x"
-  },
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

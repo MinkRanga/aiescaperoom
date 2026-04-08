@@ -1307,6 +1307,19 @@ export default function App() {
   const [compareRes, setCompareRes] = useState(null);
   const [toast, setToast] = useState(null);
   const logRef = useRef(null); const autoRef = useRef(null);
+  const audioRef = useRef(null);
+
+    useEffect(() => {
+    const startMusic = () => {
+      if (audioRef.current) {
+        audioRef.current.volume = 0.4;
+        audioRef.current.play().catch(() => {});
+      }
+      window.removeEventListener("click", startMusic);
+    };
+
+    window.addEventListener("click", startMusic);
+  }, []);
 
   const addLog = useCallback((msg, type = "info") => {
     setLog(p => [...p.slice(-80), { msg, type, id: Date.now() + Math.random() }]);
@@ -1349,6 +1362,10 @@ export default function App() {
 
   // AI controls
   const loadAI = useCallback(() => {
+    if (audioRef.current) {
+    audioRef.current.volume = 0.4;
+    audioRef.current.play().catch(() => {});
+  }
     const r = runAlgo(aiAlgo, mkState());
     setAiRes(r); setAiStep(0); setGs(mkState());
     addLog(`🤖 ${aiAlgo.toUpperCase()} → ${r.path.length} steps, ${r.explored.length} nodes, ${r.time}ms`, "ai");
@@ -1481,7 +1498,10 @@ export default function App() {
 
   // ── GAME / AI ────────────────────────────────────────────
   return (
-    <div style={{ background: "#080810", minHeight: "100vh", fontFamily: "monospace", color: "#ccc" }}>
+    <div style={{ background: "#080810", height: "100vh", width: "100vw", overflow: "hidden", fontFamily: "monospace", color: "#ccc" }}>
+          <audio ref={audioRef} loop>
+      <source src="/audio/music.mp3" type="audio/mpeg" />
+    </audio>
       {toast && (
         <div style={{ position:"fixed",top:14,left:"50%",transform:"translateX(-50%)",background:toast.color+"22",border:`1px solid ${toast.color}88`,borderRadius:30,padding:"7px 18px",fontSize:13,color:toast.color,zIndex:400,pointerEvents:"none",letterSpacing:1,whiteSpace:"nowrap" }}>
           {toast.msg}
